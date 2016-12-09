@@ -29,7 +29,7 @@ http.createServer(function (request, response) {
     }
 
   
-   response.end(process.pid);
+   
    
    
    if(request.method=='POST') 
@@ -57,7 +57,8 @@ http.createServer(function (request, response) {
     }
     else
    {       
-        response.end('Wow, this was an awesome '+request.method+' request. But you were requestesd to make a POST request.!\n'); 
+        response.end('Wow, this was an awesome '+request.method+' request. But you were requestesd to make a POST request.!\n');
+        
    }
    
 }).listen(process.env.PORT);
