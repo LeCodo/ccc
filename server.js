@@ -30,7 +30,7 @@ http.createServer(function (request, response) {
 
   
    
-   var woot = (process.pid)
+   var woot = process.pid
    
    if(request.method=='POST') 
    {
