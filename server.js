@@ -1,4 +1,5 @@
 var http = require('http');
+var url = require('url');
 
 http.createServer(function (request, response) {
    // Send the HTTP header 
@@ -6,7 +7,28 @@ http.createServer(function (request, response) {
    // Content Type: text/plain
    response.writeHead(200, {'Content-Type': 'text/plain'});
    
-    if(request.method=='POST') 
+    var queryData = url.parse(request.url, true).query;
+    var firstname =  queryData.fn;
+    var lastname =  queryData.ln;
+
+    var headers = request.headers;
+    var authorization = headers['authorization'];
+   
+    var username = null;
+    var password = null;
+
+    if (authorization)
+    {
+        var tmp = authorization.split(' ');     // Split on a space, the original auth looks like  "Basic Y2hhcmxlczoxMjM0NQ==" and we need the 2nd part
+        var buf = new Buffer(tmp[1], 'base64'); // create a buffer and tell it the data coming in is base64
+        var plain_auth = buf.toString();        // read it back out as a string At this point plain_auth = "username:password"
+
+        var creds = plain_auth.split(':');      // split on a ':'
+        username = creds[0];
+        password = creds[1];
+    }
+
+   if(request.method=='POST') 
    {
         var body = [];
         request.on('data', function(chunk) {
@@ -29,11 +51,11 @@ http.createServer(function (request, response) {
        
             });       
     }
-   else
-   {
-        // Send the response body as "Hello Cloud"
-        response.end('Hello Cloud\n'); 
-   } 
+    else
+   {       
+        response.end('Wow, this was an awesome '+request.method+' request. But you were requestesd to make a POST request.!\n'); 
+   }
+   
 }).listen(process.env.PORT);
 
 // Console will print the message
